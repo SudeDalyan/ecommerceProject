@@ -7,12 +7,10 @@ import { DeleteOutlineOutlined } from "@mui/icons-material";
 import {
   Box,
   Typography,
-  Button,
   Container,
   Divider,
   Grid,
   IconButton,
-  Stack,
   Card,
   CardContent,
 } from "@mui/material";
@@ -28,7 +26,7 @@ const CartPage = () => {
       setCartItems(parsedCartItems);
 
       // Tüm fiyatları topla
-      const totalPrice = parsedCartItems.reduce((accumulator, currentItem) => {
+      const totalPrice = parsedCartItems.reduce((accumulator: any, currentItem: { price: any; }) => {
         return accumulator + currentItem.price;
       }, 0);
       setTotalPrice(totalPrice);

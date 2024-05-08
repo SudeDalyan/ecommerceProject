@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useEffect, useState } from "react";
 import {
   AppBar,
   Badge,
@@ -12,11 +12,23 @@ import {
 } from "@mui/material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import Link from "next/link";
-import router from "next/navigation";
 
 const pages = ["Products"];
 
-function Navbar() {
+const Navbar = () => {
+  const [cartItemCount, setCartItemCount] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const storedCartItems = localStorage.getItem("cart");
+      if (storedCartItems) {
+        const parsedCartItems = JSON.parse(storedCartItems);
+        setCartItemCount(parsedCartItems.length);
+      }
+    }, 200);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <AppBar sx={{ bgcolor: "#E0C2FF" }}>
       <Container>
@@ -34,7 +46,11 @@ function Navbar() {
             }}
             style={{ cursor: "pointer" }}
           >
-            Logo
+            <img
+              src={"https://i.ibb.co/mvF7MvL/logo.png"}
+              alt="Logo"
+              width="75"
+            />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: "flex" }}>
@@ -53,9 +69,9 @@ function Navbar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Shopping Cart">
-              <Link href={"../cart"}>
+              <Link href="../cart">
                 <IconButton sx={{ p: 0 }}>
-                  <Badge color="error">
+                  <Badge badgeContent={cartItemCount} color="error">
                     <ShoppingBagOutlinedIcon
                       style={{ color: "white" }}
                       fontSize="large"
@@ -69,5 +85,5 @@ function Navbar() {
       </Container>
     </AppBar>
   );
-}
+};
 export default Navbar;

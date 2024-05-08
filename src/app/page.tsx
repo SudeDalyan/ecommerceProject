@@ -67,8 +67,8 @@ export default function Home() {
       >
         <Grid container spacing={3}>
           {products.map((product: any) => (
-            <Grid item xs={6} sm={4} md={3} key={product.id}>
-              <Card sx={{ maxWidth: 500 }}>
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+              <Card sx={{ maxHeight: 600 }}>
                 <div className={styles.cardMediaContainer}>
                   <CardMedia
                     component="img"

@@ -12,13 +12,13 @@ import {
 } from "@mui/material";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import Link from "next/link";
-import router from "next/router";
+import router from "next/navigation";
 
 const pages = ["Products"];
 
 function Navbar() {
   return (
-    <AppBar sx={{ bgcolor: "#E0C2FF"}}>
+    <AppBar sx={{ bgcolor: "#E0C2FF" }}>
       <Container>
         <Toolbar>
           <Typography
@@ -32,9 +32,6 @@ function Navbar() {
               color: "inherit",
               textDecoration: "none",
             }}
-            onClick={() => {
-              router.push("/");
-            }}
             style={{ cursor: "pointer" }}
           >
             Logo
@@ -45,7 +42,7 @@ function Navbar() {
               <Link
                 key={page}
                 style={{ textDecoration: "none", color: "#fff" }}
-                href="/"
+                href="../"
               >
                 <Button sx={{ my: 2, color: "white", display: "block" }}>
                   {page}
@@ -54,18 +51,18 @@ function Navbar() {
             ))}
           </Box>
 
-          <Box
-            sx={{ flexGrow: 0 }}
-            onClick={() => {
-              router.push("/cart");
-            }}
-          >
+          <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Shopping Cart">
-              <IconButton sx={{ p: 0 }}>
-                <Badge color="error">
-                  <ShoppingBagOutlinedIcon style={{ color: "white" }} />
-                </Badge>
-              </IconButton>
+              <Link href={"../cart"}>
+                <IconButton sx={{ p: 0 }}>
+                  <Badge color="error">
+                    <ShoppingBagOutlinedIcon
+                      style={{ color: "white" }}
+                      fontSize="large"
+                    />
+                  </Badge>
+                </IconButton>
+              </Link>
             </Tooltip>
           </Box>
         </Toolbar>

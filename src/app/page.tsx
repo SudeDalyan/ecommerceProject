@@ -1,95 +1,116 @@
-import Image from "next/image";
+"use client";
+import React, { useState, useEffect } from "react";
 import styles from "./page.module.css";
+import Navbar from "./components/Navbar";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Grid,
+  Typography,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { useRouter } from "next/navigation";
+import Loader from "./components/Loader";
+import { fetchProducts } from "./service";
 
 export default function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const limitDescription = (description: string, maxLength: number) => {
+    if (description.length > maxLength) {
+      return description.slice(0, maxLength) + "...";
+    }
+    return description;
+  };
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+      <Navbar />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          paddingX: 5,
+          paddingY: 15,
+        }}
+      >
+        <Grid container spacing={3}>
+          {products.map((product: any) => (
+            <Grid
+              item
+              xs={6}
+              sm={4}
+              md={3}
+              key={product.id}
+              onClick={() => router.push(`./product/${product?.id}`)}
+            >
+              <Card sx={{ maxWidth: 350 }}>
+                <CardMedia
+                  component="img"
+                  alt={product.title}
+                  height="200"
+                  image={product.images[0]}
+                />
+                <CardContent sx={{ padding: 1, paddingBottom: 0 }}>
+                  <Typography variant="h6" component="div" gutterBottom noWrap>
+                    {product.title}
+                  </Typography>
+                  <Typography
+                    variant="caption"
+                    display="block"
+                    color="text.secondary"
+                  >
+                    {limitDescription(product.description, 85)}
+                  </Typography>
+                  <Typography
+                    variant="h6"
+                    color="secondary"
+                    p="5px"
+                    gutterBottom
+                  >
+                    {product.price} TL
+                  </Typography>
+                </CardContent>
+                <CardActions
+                  sx={{ justifyContent: "center", padding: 1, paddingTop: 0 }}
+                >
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    sx={{ bgcolor: "#E0C2FF", width: "100%" }}
+                    endIcon={<AddIcon />}
+                  >
+                    Add Cart
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </main>
   );
 }
